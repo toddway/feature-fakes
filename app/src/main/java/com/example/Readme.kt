@@ -93,7 +93,7 @@ interface ThermostatApp {
     fun thermostat(): Thermostat
 }
 
-//fun createThermostatApp() = DaggerThermostatApp.create().thermostat()
+fun createThermostatApp() = DaggerThermostatApp.create().thermostat()
 /*
 <center>
 <figure>

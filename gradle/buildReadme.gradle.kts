@@ -4,7 +4,7 @@ tasks.create("buildReadme") {
         kotlinToMarkdown(
             inputFile = File("/Users/tway/AndroidStudioProjects/Sandbox/app/src/main/java/com/example/Readme.kt"),
             outputFile = File("${rootDir}/README.md"),
-            imgPrefix = ""
+            imgPrefix = "https://raw.githubusercontent.com/toddway/feature-fakes/main/"
         )
     }
 }
