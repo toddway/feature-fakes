@@ -36,7 +36,7 @@ fun createBasicThermostatApp() = Thermostat(WeatherGovTemperatureService())
 /*
 <center>
 <figure>
-<img src="img/com.example.sandbox.BasicThermostatApp.png"/>
+<img src="img/com.example.sandbox.BasicThermostatApp.png" style="width:auto"/>
 <figcaption><i>Arrows indicate creational dependencies.  They point from an object to the objects used to create it</i></figcaption>
 </figure>
 </center>
@@ -49,7 +49,7 @@ class Always70TemperatureService: TemperatureService {
 
 fun createFakeThermostatAppWithFakes() = Thermostat(Always70TemperatureService())
 /*
-<img src="img/com.example.sandbox.FakeThermostatApp.png" data-align="center"/>
+<img src="img/com.example.sandbox.FakeThermostatApp.png" data-align="center" style="width:auto"/>
 
 In either case, the `Thermostat` only depends on the `TemperatureService` interface and does not need to be changed to use different implementations. This concept is called [dependency inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle) and helps loosen the coupling between related objects in an application.
 
@@ -68,7 +68,7 @@ fun createThermostatAppWithFlags(): Thermostat {
     )
 }
 /*
-<img src="img/com.example.sandbox.ThermostatAppWithFlags.png" data-align="center"/>
+<img src="img/com.example.sandbox.ThermostatAppWithFlags.png" data-align="center" style="width:auto"/>
 
 Switching the state of `FakeTemperatureFeature.isEnabled` is now the only change needed to create a `Thermostat` with either version of the `TemperatureService`.
 
@@ -97,7 +97,7 @@ fun createThermostatApp() = DaggerThermostatApp.create().thermostat()
 /*
 <center>
 <figure>
-<img src="img/com.example.sandbox.ThermostatApp.png"/>
+<img src="img/com.example.sandbox.ThermostatApp.png" style="width:auto"/>
 <figcaption><i>The @Singleton annotation binds created objects to the scope of the @Component so the same instance can be reused</i></figcaption>
 </figure>
 </center>
@@ -105,7 +105,7 @@ fun createThermostatApp() = DaggerThermostatApp.create().thermostat()
 A future version of the dependency graph, with additional feature and flags, might look like this:
 
 <center>
-<img src="img/com.example.sandbox.BigThermostatApp.png"/>
+<img src="img/com.example.sandbox.BigThermostatApp.png" style="width:auto"/>
 </center>
 
 

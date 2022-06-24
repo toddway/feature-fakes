@@ -29,7 +29,7 @@ class WeatherGovTemperatureService: TemperatureService {
 fun createBasicThermostatApp() = Thermostat(WeatherGovTemperatureService())
 ```
 
-<center> <figure> <img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.BasicThermostatApp.png"/> <figcaption><i>Arrows indicate creational dependencies.  They point from an object to the objects used to create it</i></figcaption> </figure> </center>
+<center> <figure> <img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.BasicThermostatApp.png" style="width:auto"/> <figcaption><i>Arrows indicate creational dependencies.  They point from an object to the objects used to create it</i></figcaption> </figure> </center>
 
 Or we could create a version that fakes a `TemperatureService` and always returns 70 degrees:
 
@@ -41,7 +41,7 @@ class Always70TemperatureService: TemperatureService {
 fun createFakeThermostatAppWithFakes() = Thermostat(Always70TemperatureService())
 ```
 
-<img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.FakeThermostatApp.png" data-align="center"/>
+<img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.FakeThermostatApp.png" data-align="center" style="width:auto"/>
 
 In either case, the `Thermostat` only depends on the `TemperatureService` interface and does not need to be changed to use different implementations. This concept is called [dependency inversion](https://en.wikipedia.org/wiki/Dependency_inversion_principle) and helps loosen the coupling between related objects in an application.
 
@@ -62,7 +62,7 @@ fun createThermostatAppWithFlags(): Thermostat {
 }
 ```
 
-<img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.ThermostatAppWithFlags.png" data-align="center"/>
+<img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.ThermostatAppWithFlags.png" data-align="center" style="width:auto"/>
 
 Switching the state of `FakeTemperatureFeature.isEnabled` is now the only change needed to create a `Thermostat` with either version of the `TemperatureService`.
 
@@ -91,11 +91,11 @@ interface ThermostatApp {
 fun createThermostatApp() = DaggerThermostatApp.create().thermostat()
 ```
 
-<center> <figure> <img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.ThermostatApp.png"/> <figcaption><i>The @Singleton annotation binds created objects to the scope of the @Component so the same instance can be reused</i></figcaption> </figure> </center>
+<center> <figure> <img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.ThermostatApp.png" style="width:auto"/> <figcaption><i>The @Singleton annotation binds created objects to the scope of the @Component so the same instance can be reused</i></figcaption> </figure> </center>
 
 A future version of the dependency graph, with additional feature and flags, might look like this:
 
-<center> <img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.BigThermostatApp.png"/> </center>
+<center> <img src="https://raw.githubusercontent.com/toddway/feature-fakes/main/img/com.example.sandbox.BigThermostatApp.png" style="width:auto"/> </center>
 
 
 
