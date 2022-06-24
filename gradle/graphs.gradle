@@ -1,0 +1,131 @@
+def dot = new File(rootProject.buildDir, 'reports/moduleGraph.dot')
+
+task modulesGraph {
+    doLast {
+        def color1 = "darkseagreen"
+        def color2 = "azure3"
+        def color3 = "deepskyblue"
+        def color4 = "darksalmon"
+        def color5 = "gold2"
+
+
+        dot.parentFile.mkdirs()
+        dot.delete()
+
+        dot << """
+        digraph {
+            rankdir=LR;
+            
+            subgraph cluster_01 {
+                graph [label="$rootProject.name Gradle Modules",labelloc=t,fontsize=30,ranksep=1.4];
+                node [style=filled, color="#ffffff"];
+                peripheries=0;
+        """.stripIndent()
+
+        dot << '\n  # Projects\n\n'
+        rootProject.subprojects { Project project ->
+            def traits = ['shape=box']
+            if (project.plugins.hasPlugin('org.jetbrains.kotlin.multiplatform')) {
+                traits.add("fillcolor=$color1")
+            } else if (project.plugins.hasPlugin('com.android.application')) {
+                traits.add("fillcolor=$color2")
+            } else if (project.plugins.hasPlugin('com.android.library')) {
+                traits.add("fillcolor=$color3")
+            } else if (project.plugins.hasPlugin('java-library') || project.plugins.hasPlugin('java')) {
+                traits.add("fillcolor=$color4")
+            } else {
+                traits.add("fillcolor=$color5")
+            }
+            dot << "  \"${project.name}\" [${traits.join(", ")}];\n"
+        }
+
+        dot << '\n  # Dependencies\n\n'
+        rootProject.subprojects { Project project ->
+            project.configurations.all { Configuration config ->
+                config.dependencies
+                        .findAll { it.name != project.name && it.name != "unspecified"}
+                        .each { Dependency dependency ->
+                            def traits = edgeTraits(
+                                    config.name,
+                                    dependency.hasProperty("dependencyProject"),
+                                    rootProject.hasProperty('showExternal')
+                            )
+                            if (!traits.isEmpty()) {
+                                dot << "  \"${project.name}\" -> \"${dependency.name}\""
+                                dot << " [${traits.join(", ")}]"
+                                dot << '\n'
+                            }
+                        }
+            }
+        }
+        dot << "\n}\n"
+
+        dot << """
+        subgraph cluster_02 {
+            label = "Legend"
+            graph [labelloc=t,fontsize=8,ranksep=1.4]
+            node [fontsize=8,style=filled, color="#ffffff",shape=box]
+            edge [fontsize=8]
+            "Android App Module" [fillcolor=$color2]
+            "Android Library Module" [fillcolor=$color3]
+            "Multiplatform Module" [fillcolor=$color1]
+            "Java Library" [fillcolor=$color4]
+            "Android App Module" -> "Android Library Module" [style=dashed, label="api"]
+            "Android App Module" -> "Multiplatform Module" [style=solid, label="implementation"]
+            "Android App Module" -> "Java Library" [style=solid, label="implementation"]
+        }
+        
+        edge [color=invis]
+        { ${rootProject.subprojects.first().name} } -> "Android App Module";
+        
+        """.stripIndent()
+
+        dot << '}\n'
+
+        checkGraphViz(project)
+        def p = "dot -Tpng -O ${dot.name}".execute([], dot.parentFile)
+        p.waitFor()
+        if (p.exitValue() != 0) {
+            throw new RuntimeException(p.errorStream.text)
+        } else {
+            println("Module dependency graph created at ${dot.absolutePath}.png")
+        }
+    }
+}
+
+static def edgeTraits(String configName, Boolean isLocal, Boolean isShowExternal) {
+    def traits = []
+    if (isLocal) traits.add('color=black') else traits.add('color=gray')
+    if (configName.toLowerCase().endsWith('implementation')) traits.add('style=solid')
+    else traits.add('style=dashed')
+    if (!isShowExternal && !isLocal) traits = []
+    if (configName.contains("test")) traits = []
+    return traits
+}
+
+static checkGraphViz(Project project) {
+    def message = "You need GraphViz (http://www.graphviz.org/) installed on your system to run this task"
+    try {
+        def result = project.exec {
+            executable = "dot"
+            args = ["-V"]
+            ignoreExitValue = true
+        }
+        if (result.exitValue != 0) throw new RuntimeException(message)
+    } catch (Exception e) { throw new RuntimeException(message, e) }
+}
+
+//task graphs {
+//    dependsOn(':modulesGraph')
+//    doLast {
+//        copy {
+//            from "${dot.absolutePath}.png"
+//            into "$rootDir/docs"
+//        }
+//        copy {
+//            from "product-categories/build/generated/source/kapt/debug/scabbard/com.sherwin.productcategories.CategoryComponent.svg"
+//            into "$rootDir/docs"
+//        }
+//    }
+//
+//}
